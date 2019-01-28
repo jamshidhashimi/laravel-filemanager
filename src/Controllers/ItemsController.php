@@ -1,6 +1,7 @@
 <?php
 
 namespace UniSharp\LaravelFilemanager\Controllers;
+use UniSharp\LaravelFilemanager\Models\DdlFile;
 
 /**
  * Class ItemsController.
@@ -17,8 +18,8 @@ class ItemsController extends LfmController
         $path = parent::getCurrentPath();
         $sort_type = request('sort_type');
 
-        $files = parent::sortFilesAndDirectories(parent::getFilesWithInfo($path), $sort_type);
-        $directories = parent::sortFilesAndDirectories(parent::getDirectories($path), $sort_type);
+        $files = DdlFile::orderBy('id','desc')->get();
+        $directories = array();
 
         return [
             'html' => (string) view($this->getView())->with([

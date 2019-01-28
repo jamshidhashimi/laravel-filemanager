@@ -8,6 +8,7 @@ use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use UniSharp\LaravelFilemanager\Events\ImageIsUploading;
 use UniSharp\LaravelFilemanager\Events\ImageWasUploaded;
+use UniSharp\LaravelFilemanager\Models\DdlFile;
 
 /**
  * Class UploadController.
@@ -84,6 +85,15 @@ class UploadController extends LfmController
             if (config('lfm.should_change_file_mode', true)) {
                 chmod($new_file_path, config('lfm.create_file_mode', 0644));
             }
+
+            $myfile = new DdlFile();
+            $myfile->name = $new_filename;
+            $myfile->url = parent::getFileUrl($new_filename);
+            $myfile->size = File::size($file);
+            $myfile->type = parent::getFileType($file);
+            $myfile->updated = filemtime($file);
+            $myfile->save();
+
         } catch (\Exception $e) {
             array_push($this->errors, parent::error('invalid'));
 
